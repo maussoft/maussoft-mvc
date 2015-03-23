@@ -103,7 +103,7 @@ namespace Maussoft.Mvc.ViewGen
 
 		protected void AddTokens(List<Token> tokens, string type, string value)
 		{
-			string[] lines = value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+			string[] lines = value.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.None);
 			for (int i=0;i<lines.Length;i++) {
 				tokens.Add (new Token (type, lines [i]));
 				if (i < lines.Length - 1) {
