@@ -47,7 +47,7 @@ namespace Maussoft.Mvc.ViewGen
 				xmlDoc.Load(fullPath);
 				XmlNamespaceManager nsManager = new XmlNamespaceManager(xmlDoc.NameTable);
 				nsManager.AddNamespace("c", xmlDoc.DocumentElement.NamespaceURI);
-				XmlNode node = xmlDoc.SelectSingleNode("/c:configuration/c:appSettings/c:add[@key='MindaCS.ViewNamespaces']/@value");
+				XmlNode node = xmlDoc.SelectSingleNode("/c:configuration/c:appSettings/c:add[@key='MindaCS.ViewNamespaces']/@value",nsManager);
 				if (node!=null) {
 					return (node as XmlAttribute).Value.Split(',')[0];
 				}
