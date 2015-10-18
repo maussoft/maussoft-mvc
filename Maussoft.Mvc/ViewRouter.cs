@@ -52,10 +52,10 @@ namespace Maussoft.Mvc
 			return this.Invoke(context, routedClass);
 		}
 
-		public void Route(WebContext context)
+		public Boolean Route(WebContext context)
 		{
-			if (context.Sent) return;
-			if (context.View == null) return; //Route to 404?
+			if (context.Sent) return false;
+			if (context.View == null) return false; //Route to 404?
 
 			string[] parts = context.View.Split ('.');
 			string className = null;
@@ -66,11 +66,12 @@ namespace Maussoft.Mvc
 					className = (String.Join (".", parts, 0, i) + '.' + parts[parts.Length-1]).Trim('.');
 
 					if (this.Match (context, prefix, className)) {
-						return;
+						return true;
 					}
 
 				}
 			}
+			return false;
 		}
 		
 	}

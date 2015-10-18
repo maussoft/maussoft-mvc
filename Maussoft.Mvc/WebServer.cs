@@ -76,21 +76,24 @@ namespace Maussoft.Mvc
 								{
 									HttpListenerContext Context = c as HttpListenerContext;
 									WebContext webctx = null;
+									Boolean found = false;
 									try
 									{
 										if (!StaticServer.Serve(Context)) {
 											webctx = new WebContext(Context,_sessionSavePath);
 											Console.WriteLine(webctx.Url); // access log
 											webctx.StartSession();
-											new ActionRouter(_controllerNamespaces).Route(webctx);
-											new ViewRouter(_viewNamespaces).Route(webctx);
+											found = (new ActionRouter(_controllerNamespaces)).Route(webctx);
+											if (!found) webctx.View = "Error.NotFound";
+											found = new ViewRouter(_viewNamespaces).Route(webctx);
+											if (!found) webctx.SendString("NotFound",404);
 											webctx.WriteSession();
 										}
 									}
 									catch (Exception e) // application log
 									{
 										Console.WriteLine(e.ToString());
-										if (webctx!=null) webctx.SendString("<pre>"+e.ToString()+"</pre>");
+										if (webctx!=null) webctx.SendString("<pre>"+e.ToString()+"</pre>",500);
 									} 
 									finally
 									{

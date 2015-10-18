@@ -134,7 +134,7 @@ namespace Maussoft.Mvc
 			return this.Invoke(context, className, routedClass, routedMethod, parameters);
 		}
 
-		public void Route(WebContext context)
+		public Boolean Route(WebContext context)
 		{
 			string[] parts = context.Url.TrimStart('/').Split ('/');
 
@@ -151,7 +151,7 @@ namespace Maussoft.Mvc
 						arguments = new ArraySegment<string> (parts, i + 1, parts.Length - (i + 1));
 
 						if (this.Match (context, prefix, className, methodName, arguments)) {
-							return;
+							return true;
 						}
 					}
 
@@ -160,10 +160,11 @@ namespace Maussoft.Mvc
 					arguments = new ArraySegment<string> (parts, i, parts.Length - i);
 
 					if (this.Match (context, prefix, className, methodName, arguments)) {
-						return;
+						return true;
 					}
 				}
 			}
+			return false;
 		}
 		
 	}
