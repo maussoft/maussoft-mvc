@@ -7,6 +7,7 @@ using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography;
 
 namespace Maussoft.Mvc
 {
@@ -43,9 +44,10 @@ namespace Maussoft.Mvc
 			Data = new Dictionary<string, object>();
 		}
 
-		private String CreateSessionIdentifier() {
-			var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
-			var data = new byte[18];
+		private String CreateSessionIdentifier()
+		{
+			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+			Byte[] data = new byte[18];
 			rng.GetBytes(data);
 			return Convert.ToBase64String(data).Replace("/", "_").Replace("+", "-");
 		}
