@@ -86,7 +86,7 @@ namespace Maussoft.Mvc
 											found = (new ActionRouter(_controllerNamespaces)).Route(webctx);
 											if (!found) webctx.View = "Error.NotFound";
 											found = new ViewRouter(_viewNamespaces).Route(webctx);
-											if (!found) webctx.SendString("NotFound",404);
+											if (!webctx.Sent) webctx.SendString("NotFound",404);
 											webctx.WriteSession();
 										}
 									}

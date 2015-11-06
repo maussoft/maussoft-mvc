@@ -42,6 +42,7 @@ namespace Maussoft.Mvc
 			ReadPostData ();
 
 			Data = new Dictionary<string, object>();
+			Sent = false;
 		}
 
 		private String CreateSessionIdentifier()
@@ -125,7 +126,7 @@ namespace Maussoft.Mvc
 		{  
 			if (!Sent && StatusCode!=200) _context.Response.StatusCode = StatusCode;
 			byte[] buf = System.Text.Encoding.UTF8.GetBytes(output);
-			//_context.Response.ContentLength64 = buf.Length;
+			_context.Response.ContentLength64 = buf.Length;
 			_context.Response.OutputStream.Write(buf, 0, buf.Length);
 			Sent = true;
 		} 
