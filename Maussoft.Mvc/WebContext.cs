@@ -43,11 +43,18 @@ namespace Maussoft.Mvc
 			Data = new Dictionary<string, object>();
 		}
 
+		private String CreateSessionIdentifier() {
+			var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+			var data = new byte[18];
+			rng.GetBytes(data);
+			return Convert.ToBase64String(data).Replace("/", "_").Replace("+", "-");
+		}
+
 		public void StartSession()
 		{
 			Cookie cookie = _context.Request.Cookies ["Maussoft.Mvc"];
 			if (cookie == null) {
-				SessionIdentifier = System.Guid.NewGuid ().ToString();
+				SessionIdentifier = CreateSessionIdentifier();
 				cookie = new Cookie ("Maussoft.Mvc", SessionIdentifier);
 				_context.Response.AppendCookie (cookie);
 			} else {
@@ -116,7 +123,7 @@ namespace Maussoft.Mvc
 		{  
 			if (!Sent && StatusCode!=200) _context.Response.StatusCode = StatusCode;
 			byte[] buf = System.Text.Encoding.UTF8.GetBytes(output);
-			_context.Response.ContentLength64 = buf.Length;
+			//_context.Response.ContentLength64 = buf.Length;
 			_context.Response.OutputStream.Write(buf, 0, buf.Length);
 			Sent = true;
 		} 
