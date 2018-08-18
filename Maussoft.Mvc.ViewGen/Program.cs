@@ -8,7 +8,6 @@ namespace Maussoft.Mvc.ViewGen
 	{
 		static void Main(string[] args)
 		{
-			//string directory = Path.GetFullPath ("../../../MindaCSTest");
 			string directory = Directory.GetCurrentDirectory ();
 			string viewDirectory = Path.Combine(directory,"Views");
 			string viewNamespace = FindViewNamespaceInAppConfig (directory, "App.config");
@@ -47,7 +46,7 @@ namespace Maussoft.Mvc.ViewGen
 				xmlDoc.Load(fullPath);
 				XmlNamespaceManager nsManager = new XmlNamespaceManager(xmlDoc.NameTable);
 				nsManager.AddNamespace("c", xmlDoc.DocumentElement.NamespaceURI);
-				XmlNode node = xmlDoc.SelectSingleNode("/c:configuration/c:appSettings/c:add[@key='MindaCS.ViewNamespaces']/@value",nsManager);
+				XmlNode node = xmlDoc.SelectSingleNode("/c:configuration/c:appSettings/c:add[@key='Maussoft.Mvc.ViewNamespaces']/@value",nsManager);
 				if (node!=null) {
 					return (node as XmlAttribute).Value.Split(',')[0];
 				}
