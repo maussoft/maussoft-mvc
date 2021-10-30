@@ -6,8 +6,8 @@ Imports System.Text
 Imports System.Text.RegularExpressions
 
 Namespace Views.Test
-	Public Class Index
-		Inherits Layouts.Default
+	Public Class Index(Of TSession As New)
+		Inherits Layouts.Default(Of TSession)
 		
 		Public Overrides Sub Content()
 			WriteLine()

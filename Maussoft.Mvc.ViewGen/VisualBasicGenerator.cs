@@ -108,7 +108,7 @@ namespace Maussoft.Mvc.ViewGen
 			}
 
 			output.Append ("\nNamespace " + properties ["Namespace"] + "\n\t");
-			output.Append ("Public Class " + properties ["Class"] + "\n\t\tInherits " + properties ["Inherits"] + "\n\t\t\n\t\t");
+			output.Append ("Public Class " + properties ["Class"] + "(Of TSession As New)\n\t\tInherits " + properties ["Inherits"] + "(Of TSession)\n\t\t\n\t\t");
 			output.Append ("Public Overrides Sub "+functionName+"()\n\t\t\t");
 
 			if (properties ["Type"] == "Master") {

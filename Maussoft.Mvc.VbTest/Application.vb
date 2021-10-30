@@ -1,11 +1,8 @@
 ﻿Imports System.Configuration
 
-Imports Maussoft.Mvc
-
 Public Class Application
 	Public Shared Sub Main()
-		Dim w as New WebServer(ConfigurationManager.AppSettings)
+		Dim w as New WebServer(Of Session)(ConfigurationManager.AppSettings)
 		w.Run()
 	End Sub
 End Class
-

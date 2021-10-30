@@ -6,16 +6,16 @@ using System.Text.RegularExpressions;
 
 namespace Maussoft.Mvc
 {
-	public class View
+	public class View<TSession> where TSession : new()
 	{
-		protected WebContext Context=null;
+		protected WebContext<TSession> Context=null;
 		private StringWriter _writer = new StringWriter();
 
 		public virtual void Header() {}
 		public virtual void Content() {}
 		public virtual void Footer() {}
 
-		public string Render(WebContext context)
+		public string Render(WebContext<TSession> context)
 		{
 			Context = context;
 			_writer = new StringWriter ();

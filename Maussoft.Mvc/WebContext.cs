@@ -8,10 +8,12 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Maussoft.Mvc
 {
-	public class WebContext
+	public class WebContext<TSession> where TSession : new()
 	{  
 		public string Url;
 		public string Controller;
@@ -25,7 +27,7 @@ namespace Maussoft.Mvc
 		public Dictionary<string, object> Data;
 
 		public string SessionIdentifier;
-		public Dictionary<string, object> Session;
+		public TSession Session;
 
 		private HttpListenerContext _context;
 		private string _sessionSavePath;
@@ -67,18 +69,19 @@ namespace Maussoft.Mvc
 			_sessionStream = WaitForFile (_sessionSavePath + SessionIdentifier, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
 
 			if (_sessionStream.Length == 0) {
-				Session = new Dictionary<string,object> ();
+				Session = new TSession();
 			} else {
-				BinaryFormatter bin = new BinaryFormatter ();
-				Session = (Dictionary<string,object>)bin.Deserialize (_sessionStream);
+				var bytes = new byte[_sessionStream.Length];
+				_sessionStream.Read(bytes,0,bytes.Length);
+				Session = JsonSerializer.Deserialize<TSession>(bytes);
 			}
 		}
 
 		public void WriteSession()
 		{
 			_sessionStream.SetLength (0);
-			BinaryFormatter bin = new BinaryFormatter();
-			bin.Serialize(_sessionStream, Session);
+			var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
+			_sessionStream.Write(bytes,0,bytes.Length);
 		}
 
 		public void CloseSession()

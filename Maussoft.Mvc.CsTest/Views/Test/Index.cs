@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Maussoft.Mvc.CsTest.Views.Test
 {
-	public class Index: Layouts.Default
+	public class Index<TSession>: Layouts.Default<TSession> where TSession : new()
 	{
 		public override void Content()
 		{
