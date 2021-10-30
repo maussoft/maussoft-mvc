@@ -1,62 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{656BB647-327A-42EA-80BB-EFBAF6F78D50}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Maussoft.Mvc.VbTest</RootNamespace>
-    <AssemblyName>Maussoft.Mvc.VbTest</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <DefineTrace>false</DefineTrace>
-    <DefineDebug>false</DefineDebug>
-    <Externalconsole>true</Externalconsole>
-    <AdditionalParameters>
-    </AdditionalParameters>
-    <CustomCommands>
-      <CustomCommands>
-        <Command type="BeforeBuild" command="../Maussoft.Mvc.ViewGen/bin/Debug/ViewGen.exe" workingdir="${ProjectDir}" pauseExternalConsole="True" />
-      </CustomCommands>
-    </CustomCommands>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <Externalconsole>true</Externalconsole>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>false</DefineTrace>
-    <AdditionalParameters>
-    </AdditionalParameters>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Application.vb" />
-    <Compile Include="AssemblyInfo.vb" />
-    <Compile Include="Controllers\Test.vb" />
-    <Compile Include="Views\Test\Index.vb" />
-    <Compile Include="Views\Layouts\Default.vb" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
-  <ItemGroup>
-    <None Include="Content\test.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Views\Layouts\Default.aspx" />
-    <None Include="Views\Test\Index.aspx" />
-    <None Include="App.config" />
-  </ItemGroup>
+
+  <Target Name="GenerateCode" BeforeTargets="CoreCompile">
+      <Exec Command="echo 'Cleaning files...'" />
+      <Exec Command="../Maussoft.Mvc.ViewGen/bin/Debug/net5.0/Maussoft.Mvc.ViewGen" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
   <ItemGroup>
     <ProjectReference Include="..\Maussoft.Mvc\Maussoft.Mvc.csproj">
-      <Project>{E086D184-6B9E-44F7-9B8E-00598C82A107}</Project>
       <Name>Maussoft.Mvc</Name>
     </ProjectReference>
   </ItemGroup>
+
 </Project>

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Configuration;
-
-using Maussoft.Mvc;
+﻿using System.Configuration;
 
 namespace Maussoft.Mvc.CsTest
 {
@@ -9,7 +6,7 @@ namespace Maussoft.Mvc.CsTest
 	{
 		public static void Main (string[] args)
 		{
-			new WebServer(ConfigurationManager.AppSettings).Run();
+			new WebServer<Session>(ConfigurationManager.AppSettings).Run();
 		}
 	}
 }

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Maussoft.Mvc
 {
-	public class ActionRouter
+	public class ActionRouter<TSession> where TSession : new()
 	{
 		string[] namespaces;
 
@@ -18,7 +18,7 @@ namespace Maussoft.Mvc
 			this.namespaces = namespaces;
 		}
 
-		private Boolean Invoke(WebContext context, string className, Type routedClass, MethodInfo routedMethod, object[] parameters)
+		private Boolean Invoke(WebContext<TSession> context, string className, Type routedClass, MethodInfo routedMethod, object[] parameters)
 		{
 			object routedObject = Activator.CreateInstance(routedClass);   
 			if (routedObject == null) {
@@ -36,7 +36,7 @@ namespace Maussoft.Mvc
 			return true;
 		}
 
-		private object[] GetParameters(WebContext context, ParameterInfo[] parameterList, ArraySegment<string> arguments)
+		private object[] GetParameters(WebContext<TSession> context, ParameterInfo[] parameterList, ArraySegment<string> arguments)
 		{
 			object[] parameters = new object[parameterList.Length];
 
@@ -81,7 +81,7 @@ namespace Maussoft.Mvc
 			return parameters;
 		}
 
-		private Boolean Match(WebContext context, string prefix, string className, string methodName, ArraySegment<string> arguments)
+		private Boolean Match(WebContext<TSession> context, string prefix, string className, string methodName, ArraySegment<string> arguments)
 		{
 			Type routedClass = null;
 			MethodInfo routedMethod = null;
@@ -134,7 +134,7 @@ namespace Maussoft.Mvc
 			return this.Invoke(context, className, routedClass, routedMethod, parameters);
 		}
 
-		public Boolean Route(WebContext context)
+		public Boolean Route(WebContext<TSession> context)
 		{
 			string[] parts = context.Url.TrimStart('/').Split ('/');
 

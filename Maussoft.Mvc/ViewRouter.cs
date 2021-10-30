@@ -11,7 +11,7 @@ using Maussoft.Mvc;
 
 namespace Maussoft.Mvc
 {
-	public class ViewRouter
+	public class ViewRouter<TSession> where TSession : new()
 	{
 		string[] namespaces;
 
@@ -20,9 +20,9 @@ namespace Maussoft.Mvc
 			this.namespaces = namespaces;
 		}
 
-		private Boolean Invoke(WebContext context, Type routedClass)
+		private Boolean Invoke(WebContext<TSession> context, Type routedClass)
 		{
-			View view = Activator.CreateInstance(routedClass) as View;
+			View<TSession> view = Activator.CreateInstance(routedClass) as View<TSession>;
 			if (view == null) {
 				Console.WriteLine ("ViewRouter: object {0} could not be created.", routedClass.FullName);
 				return false;
@@ -35,7 +35,7 @@ namespace Maussoft.Mvc
 			return true;
 		}
 
-		private Boolean Match(WebContext context, string prefix, string className)
+		private Boolean Match(WebContext<TSession> context, string prefix, string className)
 		{
 			Type routedClass = null;
 			Assembly assembly = Assembly.GetEntryAssembly();
@@ -52,7 +52,7 @@ namespace Maussoft.Mvc
 			return this.Invoke(context, routedClass);
 		}
 
-		public Boolean Route(WebContext context)
+		public Boolean Route(WebContext<TSession> context)
 		{
 			if (context.Sent) return false;
 			if (context.View == null) return false; //Route to 404?

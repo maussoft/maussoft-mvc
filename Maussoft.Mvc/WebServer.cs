@@ -10,7 +10,7 @@ using System.Collections.Specialized;
 
 namespace Maussoft.Mvc
 {
-	public class WebServer
+	public class WebServer<TSession> where TSession : new()
 	{
 		private readonly HttpListener _listener = new HttpListener();
 
@@ -75,17 +75,17 @@ namespace Maussoft.Mvc
 							ThreadPool.QueueUserWorkItem((c) =>
 								{
 									HttpListenerContext Context = c as HttpListenerContext;
-									WebContext webctx = null;
+									WebContext<TSession> webctx = null;
 									Boolean found = false;
 									try
 									{
 										if (!StaticServer.Serve(Context)) {
-											webctx = new WebContext(Context,_sessionSavePath);
+											webctx = new WebContext<TSession>(Context,_sessionSavePath);
 											Console.WriteLine(webctx.Url); // access log
 											webctx.StartSession();
-											found = (new ActionRouter(_controllerNamespaces)).Route(webctx);
+											found = (new ActionRouter<TSession>(_controllerNamespaces)).Route(webctx);
 											if (!found) webctx.View = "Error.NotFound";
-											found = new ViewRouter(_viewNamespaces).Route(webctx);
+											found = new ViewRouter<TSession>(_viewNamespaces).Route(webctx);
 											if (!webctx.Sent) webctx.SendString("NotFound",404);
 											webctx.WriteSession();
 										}

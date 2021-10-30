@@ -6,7 +6,7 @@ using System;
 
 namespace Maussoft.Mvc.CsTest.Views.Layouts
 {
-	public class Default: Maussoft.Mvc.View
+	public class Default<TSession>: Maussoft.Mvc.View<TSession> where TSession : new()
 	{
 		public override void Header()
 		{

@@ -4,8 +4,8 @@
 
 
 Namespace Views.Layouts
-	Public Class [Default]
-		Inherits Global.Maussoft.Mvc.View
+	Public Class [Default](Of TSession As New)
+		Inherits Global.Maussoft.Mvc.View(Of TSession)
 		
 		Public Overrides Sub Header()
 			WriteLine()
