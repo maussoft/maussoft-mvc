@@ -49,7 +49,7 @@ namespace Maussoft.Mvc
 
 			_sessionSavePath = settings.Get("Maussoft.Mvc.SessionSavePath");
 			if (_sessionSavePath == null) {
-				_sessionSavePath = Path.Combine (System.IO.Path.GetTempPath (), "mindacs");
+				_sessionSavePath = Path.Combine (System.IO.Path.GetTempPath (), "maussoftmvc");
 			}
 
 			value = settings.Get ("Maussoft.Mvc.SessionTimeout");
