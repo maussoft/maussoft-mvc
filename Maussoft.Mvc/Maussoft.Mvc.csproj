@@ -10,8 +10,4 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup>
-      <PackageReference Include="System.Configuration.ConfigurationManager" Version="*" />
-  </ItemGroup>
-
 </Project>

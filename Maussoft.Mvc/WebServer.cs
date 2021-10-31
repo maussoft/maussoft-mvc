@@ -3,8 +3,8 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Reflection;
+using System.Text.Json;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 //http://codehosting.net/blog/BlogEngine/post/Simple-C-Web-Server.aspx
 
@@ -20,16 +20,22 @@ namespace Maussoft.Mvc
 		private readonly string _sessionSavePath = null;
 		private readonly int _sessionTimeout;
 
-		public WebServer(NameValueCollection settings)
+		public WebServer(string appSettingsJsonFilename)
 		{
 			string value;
+			Dictionary<string, string> settings;
 
-			_listen = settings.Get("Maussoft.Mvc.Listen");
+			using (StreamReader r = new StreamReader(appSettingsJsonFilename))
+			{
+				settings = JsonSerializer.Deserialize<Dictionary<string, string>>(r.ReadToEnd());
+			}
+
+			_listen = settings["Maussoft.Mvc.ListenUrl"];
 			if (_listen == null) {
 				_listen = "http://localhost:9000";
 			}
 
-			value = settings.Get ("Maussoft.Mvc.ViewNamespaces");
+			value = settings["Maussoft.Mvc.ViewNamespaces"];
 			if (value == null) {
 				System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 				MethodBase method = stackTrace.GetFrame(1).GetMethod();
@@ -38,7 +44,7 @@ namespace Maussoft.Mvc
 				_viewNamespaces = value.Split (',');
 			}
 
-			value = settings.Get ("Maussoft.Mvc.ControllerNamespaces");
+			value = settings["Maussoft.Mvc.ControllerNamespaces"];
 			if (value == null) {
 				System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
 				MethodBase method = stackTrace.GetFrame(1).GetMethod();
@@ -47,12 +53,12 @@ namespace Maussoft.Mvc
 				_controllerNamespaces = value.Split (',');
 			}
 
-			_sessionSavePath = settings.Get("Maussoft.Mvc.SessionSavePath");
+			_sessionSavePath = settings["Maussoft.Mvc.SessionSavePath"];
 			if (_sessionSavePath == null) {
 				_sessionSavePath = Path.Combine (System.IO.Path.GetTempPath (), "maussoftmvc");
 			}
 
-			value = settings.Get ("Maussoft.Mvc.SessionTimeout");
+			value = settings["Maussoft.Mvc.SessionTimeout"];
 			if (value == null || !int.TryParse(value, out _sessionTimeout)) {
 				_sessionTimeout = 3600;
 			}
