@@ -9,6 +9,8 @@ High speed web framework built in C# that runs on .NET 5
 ### TODO
 
 - config in json format
-- add 404 for nonmatching route (with debug info) and remove router debug output
-- add debug toolbar with API client (call pane) and MySQL connection debugging (query pane)
-
+- add 404 for nonmatching route 
+- add debug toolbar with
+  - routing debugger (remove router debug output)
+  - API client debugger (API call pane)
+  - MySQL connection debugging (query pane)
