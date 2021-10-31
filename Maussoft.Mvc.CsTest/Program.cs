@@ -1,4 +1,5 @@
 ﻿using System.Configuration;
+using System.Reflection;
 
 namespace Maussoft.Mvc.CsTest
 {
@@ -6,7 +7,7 @@ namespace Maussoft.Mvc.CsTest
 	{
 		public static void Main (string[] args)
 		{
-			new WebServer<Session>(ConfigurationManager.AppSettings).Run();
+			new WebServer<Session>(ConfigurationManager.AppSettings).Run(Assembly.GetExecutingAssembly());
 		}
 	}
 }

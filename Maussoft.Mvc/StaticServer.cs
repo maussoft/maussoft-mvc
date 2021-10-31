@@ -54,26 +54,29 @@ namespace Maussoft.Mvc
 			return MimeTypes.ContainsKey(fileExtension) ? MimeTypes[fileExtension] : null;
 		}
 
-		public static bool Serve(HttpListenerContext Context)
+		public static bool Serve(Assembly assembly, HttpListenerContext context)
 		{
-			string filename = Context.Request.Url.LocalPath;
-			filename = Path.Combine("Content",filename.Substring(1));
-			filename = Path.Combine(Directory.GetCurrentDirectory(),filename);
+			string filename = context.Request.Url.LocalPath;
+			filename = Path.Combine("Content:",filename.Substring(1));
+			//filename = Path.Combine(Directory.GetCurrentDirectory(),filename);
 
-			if (File.Exists(filename)) { //serve static
-				FileStream f = new FileStream(filename,FileMode.Open,FileAccess.Read);
-				Context.Response.Headers.Add("Cache-Control", "max-age=600, public, no-transform");
-				Context.Response.ContentType = GetContentType (filename);
+			using (Stream stream = assembly.GetManifestResourceStream(filename))
+			{
+				if (stream == null) {
+					Console.WriteLine("not found "+filename);
+					return false;
+				}
+
+				context.Response.Headers.Add("Cache-Control", "max-age=600, public, no-transform");
+				context.Response.ContentType = GetContentType (filename);
 				
 				byte[] buffer = new byte[8192];
 				int bytes;
-				while ((bytes = f.Read(buffer, 0, buffer.Length)) > 0) {
-					Context.Response.OutputStream.Write(buffer, 0, bytes);
+				while ((bytes = stream.Read(buffer, 0, buffer.Length)) > 0) {
+					context.Response.OutputStream.Write(buffer, 0, bytes);
 				}
 				return true;
 			}
-
-			return false;
 		}
 	}
 }

@@ -17,4 +17,11 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildProjectDirectory)\Content\**">
+      <Link>Content\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <LogicalName>Content:/$([System.String]::Copy('%(RecursiveDir)').Replace('\', '/'))%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

@@ -64,7 +64,7 @@ namespace Maussoft.Mvc
 			_listener.Start();
 		}
 
-		public void Run()
+		public void Run(Assembly assembly)
 		{
 			ThreadPool.QueueUserWorkItem((o) =>
 				{
@@ -74,13 +74,13 @@ namespace Maussoft.Mvc
 						{
 							ThreadPool.QueueUserWorkItem((c) =>
 								{
-									HttpListenerContext Context = c as HttpListenerContext;
+									HttpListenerContext context = c as HttpListenerContext;
 									WebContext<TSession> webctx = null;
 									Boolean found = false;
 									try
 									{
-										if (!StaticServer.Serve(Context)) {
-											webctx = new WebContext<TSession>(Context,_sessionSavePath);
+										if (!StaticServer.Serve(assembly, context)) {
+											webctx = new WebContext<TSession>(context,_sessionSavePath);
 											Console.WriteLine(webctx.Url); // access log
 											webctx.StartSession();
 											found = (new ActionRouter<TSession>(_controllerNamespaces)).Route(webctx);
@@ -97,7 +97,7 @@ namespace Maussoft.Mvc
 									} 
 									finally
 									{
-										Context.Response.OutputStream.Close();
+										context.Response.OutputStream.Close();
 										if (webctx!=null) webctx.CloseSession();
 									}
 								}, _listener.GetContext());
