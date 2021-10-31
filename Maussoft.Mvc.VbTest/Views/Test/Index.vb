@@ -11,8 +11,8 @@ Namespace Views.Test
 		
 		Public Overrides Sub Content()
 			WriteLine()
-			Context.Data("title") = Context.Data("Name")  : WriteLine()
-			WriteLine("Email: <input type=""text"" value=""{0}""></input>",  Context.Data("Email"))
+			Context.Data.Title = Context.Data.Name  : WriteLine()
+			WriteLine("Email: <input type=""text"" value=""{0}""></input>",  Context.Data.Email )
 			Write("Test: <input type=""text"" value=""{0}""></input>",  "<?/!@#$$%^&*()_+-={}[]|\\:""';,.>")
 		End Sub
 	End Class

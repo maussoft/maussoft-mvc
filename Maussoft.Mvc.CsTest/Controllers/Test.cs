@@ -29,16 +29,16 @@ namespace Maussoft.Mvc.CsTest.Controllers
 
 			names.Add(name);
 
-			context.Data ["Name"] = "World";
-			context.Data ["Html"] = rstr;
+			context.Data.Name = "World";
+			context.Data.Html = rstr;
 
 			context.SendString (rstr);
 		}
 
 		public void Index(WebContext<Session> context)
 		{
-			context.Data ["Name"] = "World";
-			context.Data ["Email"] = "test@test.com";
+			context.Data.Name = "World";
+			context.Data.Email = "test@test.com";
 		}
 
 		public void Index2(WebContext<Session> context)

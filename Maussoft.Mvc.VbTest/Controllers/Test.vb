@@ -25,15 +25,15 @@ Namespace Controllers
 
 			names.Add(name)
 
-			context.Data("Name") = "World"
-			context.Data("Html") = rstr
+			context.Data.Name = "World"
+			context.Data.Html = rstr
 
 			context.SendString(rstr)
 		End Sub
 
 		Public Sub Index(context As WebContext(Of Session))
-			context.Data("Name") = "World"
-			context.Data("Email") = "test@test.com"
+			context.Data.Name = "World"
+			context.Data.Email = "test@test.com"
 		End Sub
 
 		Public Sub Index2(context As WebContext(Of Session))

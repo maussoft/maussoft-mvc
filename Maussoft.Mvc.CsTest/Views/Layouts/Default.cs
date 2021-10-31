@@ -14,7 +14,7 @@ namespace Maussoft.Mvc.CsTest.Views.Layouts
 			WriteLine(@"<!DOCTYPE html>");
 			WriteLine(@"<html>");
 			WriteLine(@"  <head>");
-			WriteLine(@"    <title>Hello {0}</title>",  Context.Data ["Name"] );
+			WriteLine(@"    <title>Hello {0}</title>",  Context.Data.Name );
 			WriteLine(@"  </head>");
 			WriteLine(@"  <body>");
 			Write(@"    ");

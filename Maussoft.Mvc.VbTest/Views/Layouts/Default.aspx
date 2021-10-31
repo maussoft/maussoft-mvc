@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello <%= Context.Data ("Name") %></title>
+    <title>Hello <%= Context.Data.Name %></title>
   </head>
   <body>
     <% RenderViewContent() %>

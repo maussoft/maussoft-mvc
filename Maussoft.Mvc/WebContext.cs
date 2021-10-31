@@ -23,8 +23,7 @@ namespace Maussoft.Mvc
 
 		public Dictionary<string, string> Post;
 		public CookieCollection Cookies;
-
-		public Dictionary<string, object> Data;
+		public dynamic Data;
 
 		public string SessionIdentifier;
 		public TSession Session;
@@ -43,7 +42,7 @@ namespace Maussoft.Mvc
 			Post = new Dictionary<string, string>();
 			ReadPostData ();
 
-			Data = new Dictionary<string, object>();
+			Data = new System.Dynamic.ExpandoObject();
 			Sent = false;
 		}
 
