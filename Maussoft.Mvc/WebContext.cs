@@ -28,17 +28,17 @@ namespace Maussoft.Mvc
 		public string SessionIdentifier;
 		public TSession Session;
 
-		private HttpListenerContext _context;
-		private string _sessionSavePath;
+		private HttpListenerContext context;
+		private string sessionSavePath;
 
-		private FileStream _sessionStream;
+		private FileStream sessionStream;
 
 		public WebContext(HttpListenerContext context, string sessionSavePath)
 		{
-			_context = context;
-			_sessionSavePath = sessionSavePath;
+			this.context = context;
+			this.sessionSavePath = sessionSavePath;
 
-			Url = _context.Request.RawUrl;
+			Url = this.context.Request.RawUrl;
 			Post = new Dictionary<string, string>();
 			ReadPostData ();
 
@@ -56,36 +56,36 @@ namespace Maussoft.Mvc
 
 		public void StartSession()
 		{
-			Cookie cookie = _context.Request.Cookies ["Maussoft.Mvc"];
+			Cookie cookie = this.context.Request.Cookies ["Maussoft.Mvc"];
 			if (cookie == null) {
 				SessionIdentifier = CreateSessionIdentifier();
 				cookie = new Cookie ("Maussoft.Mvc", SessionIdentifier);
-				_context.Response.AppendCookie (cookie);
+				this.context.Response.AppendCookie (cookie);
 			} else {
 				SessionIdentifier = cookie.Value;
 			}
 
-			_sessionStream = WaitForFile (_sessionSavePath + SessionIdentifier, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+			this.sessionStream = WaitForFile (this.sessionSavePath + SessionIdentifier, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
 
-			if (_sessionStream.Length == 0) {
+			if (this.sessionStream.Length == 0) {
 				Session = new TSession();
 			} else {
-				var bytes = new byte[_sessionStream.Length];
-				_sessionStream.Read(bytes,0,bytes.Length);
+				byte[] bytes = new byte[this.sessionStream.Length];
+				this.sessionStream.Read(bytes,0,bytes.Length);
 				Session = JsonSerializer.Deserialize<TSession>(bytes);
 			}
 		}
 
 		public void WriteSession()
 		{
-			_sessionStream.SetLength (0);
+			this.sessionStream.SetLength (0);
 			var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
-			_sessionStream.Write(bytes,0,bytes.Length);
+			this.sessionStream.Write(bytes,0,bytes.Length);
 		}
 
 		public void CloseSession()
 		{
-			_sessionStream.Close ();
+			this.sessionStream.Close ();
 		}
 
 		FileStream WaitForFile (string fullPath, FileMode mode, FileAccess access, FileShare share)
@@ -109,7 +109,7 @@ namespace Maussoft.Mvc
 
 		private void ReadPostData()
 		{
-			HttpListenerRequest request = _context.Request;
+			HttpListenerRequest request = this.context.Request;
 			if (request.HasEntityBody)
 			{
 				StreamReader reader = new StreamReader (request.InputStream, request.ContentEncoding);
@@ -126,10 +126,10 @@ namespace Maussoft.Mvc
 
 		public void SendString(string output,int StatusCode=200)
 		{  
-			if (!Sent && StatusCode!=200) _context.Response.StatusCode = StatusCode;
+			if (!Sent && StatusCode!=200) this.context.Response.StatusCode = StatusCode;
 			byte[] buf = System.Text.Encoding.UTF8.GetBytes(output);
-			_context.Response.ContentLength64 = buf.Length;
-			_context.Response.OutputStream.Write(buf, 0, buf.Length);
+			this.context.Response.ContentLength64 = buf.Length;
+			this.context.Response.OutputStream.Write(buf, 0, buf.Length);
 			Sent = true;
 		} 
 

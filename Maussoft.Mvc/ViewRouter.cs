@@ -13,11 +13,11 @@ namespace Maussoft.Mvc
 {
 	public class ViewRouter<TSession> where TSession : new()
 	{
-		string[] namespaces;
+		string viewNamespace;
 
-		public ViewRouter(string[] namespaces)
+		public ViewRouter(string viewNamespace)
 		{
-			this.namespaces = namespaces;
+			this.viewNamespace = viewNamespace;
 		}
 
 		private Boolean Invoke(WebContext<TSession> context, Type routedClass)
@@ -60,16 +60,15 @@ namespace Maussoft.Mvc
 			string[] parts = context.View.Split ('.');
 			string className = null;
 
-			foreach (string prefix in this.namespaces) {
-				for (int i = parts.Length-1; i >= 0; i--) {
+			string prefix = viewNamespace;
+			for (int i = parts.Length-1; i >= 0; i--) {
 
-					className = (String.Join (".", parts, 0, i) + '.' + parts[parts.Length-1]).Trim('.');
+				className = (String.Join (".", parts, 0, i) + '.' + parts[parts.Length-1]).Trim('.');
 
-					if (this.Match (context, prefix, className)) {
-						return true;
-					}
-
+				if (this.Match (context, prefix, className)) {
+					return true;
 				}
+
 			}
 			return false;
 		}

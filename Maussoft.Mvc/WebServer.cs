@@ -15,8 +15,9 @@ namespace Maussoft.Mvc
 		private readonly HttpListener _listener = new HttpListener();
 
 		private readonly string _listen = null;
-		private readonly string[] _viewNamespaces = null;
-		private readonly string[] _controllerNamespaces = null;
+		private readonly Assembly _assembly = null;
+		private readonly string _viewNamespace = null;
+		private readonly string _controllerNamespace = null;
 		private readonly string _sessionSavePath = null;
 		private readonly int _sessionTimeout;
 
@@ -30,28 +31,17 @@ namespace Maussoft.Mvc
 				settings = JsonSerializer.Deserialize<Dictionary<string, string>>(r.ReadToEnd());
 			}
 
+			_assembly = Assembly.GetEntryAssembly();
+
 			_listen = settings["Maussoft.Mvc.ListenUrl"];
 			if (_listen == null) {
 				_listen = "http://localhost:9000";
 			}
 
-			value = settings["Maussoft.Mvc.ViewNamespaces"];
-			if (value == null) {
-				System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
-				MethodBase method = stackTrace.GetFrame(1).GetMethod();
-				_viewNamespaces = new string[]{method.DeclaringType.Namespace+".Views"};
-			} else {
-				_viewNamespaces = value.Split (',');
-			}
-
-			value = settings["Maussoft.Mvc.ControllerNamespaces"];
-			if (value == null) {
-				System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
-				MethodBase method = stackTrace.GetFrame(1).GetMethod();
-				_controllerNamespaces = new string[]{method.DeclaringType.Namespace+".Controllers"};
-			} else {
-				_controllerNamespaces = value.Split (',');
-			}
+			System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace();
+			MethodBase method = stackTrace.GetFrame(1).GetMethod();
+			_viewNamespace = method.DeclaringType.Namespace+".Views";
+			_controllerNamespace = method.DeclaringType.Namespace+".Controllers";
 
 			_sessionSavePath = settings["Maussoft.Mvc.SessionSavePath"];
 			if (_sessionSavePath == null) {
@@ -63,14 +53,14 @@ namespace Maussoft.Mvc
 				_sessionTimeout = 3600;
 			}
 
-			string m = "Maussoft.Mvc Server\nlisten: {0}\nviewNamespaces: {1}\ncontrollerNamespaces: {2}\nsessionSavePath: {3}\nsessionTimeout: {4}";
-			Console.WriteLine(m, _listen, String.Join(", ",_viewNamespaces), String.Join(", ",_controllerNamespaces), _sessionSavePath, _sessionTimeout);
+			string m = "Maussoft.Mvc Server\nlisten: {0}\nviewNamespace: {1}\ncontrollerNamespace: {2}\nsessionSavePath: {3}\nsessionTimeout: {4}";
+			Console.WriteLine(m, _listen, _viewNamespace, _controllerNamespace, _sessionSavePath, _sessionTimeout);
 
 			_listener.Prefixes.Add(_listen.TrimEnd('/')+'/');
 			_listener.Start();
 		}
 
-		public void Run(Assembly assembly)
+		public void Run()
 		{
 			ThreadPool.QueueUserWorkItem((o) =>
 				{
@@ -85,13 +75,13 @@ namespace Maussoft.Mvc
 									Boolean found = false;
 									try
 									{
-										if (!StaticServer.Serve(assembly, context)) {
+										if (!StaticServer.Serve(_assembly, context)) {
 											webctx = new WebContext<TSession>(context,_sessionSavePath);
 											Console.WriteLine(webctx.Url); // access log
 											webctx.StartSession();
-											found = (new ActionRouter<TSession>(_controllerNamespaces)).Route(webctx);
+											found = (new ActionRouter<TSession>(_controllerNamespace)).Route(webctx);
 											if (!found) webctx.View = "Error.NotFound";
-											found = new ViewRouter<TSession>(_viewNamespaces).Route(webctx);
+											found = new ViewRouter<TSession>(_viewNamespace).Route(webctx);
 											if (!webctx.Sent) webctx.SendString("NotFound",404);
 											webctx.WriteSession();
 										}

@@ -11,11 +11,11 @@ namespace Maussoft.Mvc
 {
 	public class ActionRouter<TSession> where TSession : new()
 	{
-		string[] namespaces;
+		string controllerNamespace;
 
-		public ActionRouter(string[] namespaces)
+		public ActionRouter(string controllerNamespace)
 		{
-			this.namespaces = namespaces;
+			this.controllerNamespace = controllerNamespace;
 		}
 
 		private Boolean Invoke(WebContext<TSession> context, string className, Type routedClass, MethodInfo routedMethod, object[] parameters)
@@ -142,26 +142,25 @@ namespace Maussoft.Mvc
 			string methodName = null;
 			ArraySegment<string> arguments = new ArraySegment<string> ();
 
-			foreach (string prefix in this.namespaces) {
-				for (int i = parts.Length; i >= 1; i--) {
+			string prefix = this.controllerNamespace;
+			for (int i = parts.Length; i >= 1; i--) {
 
-					if (i < parts.Length) {
-						className = String.Join(".", parts, 0, i);
-						methodName = parts [i];
-						arguments = new ArraySegment<string> (parts, i + 1, parts.Length - (i + 1));
-
-						if (this.Match (context, prefix, className, methodName, arguments)) {
-							return true;
-						}
-					}
-
+				if (i < parts.Length) {
 					className = String.Join(".", parts, 0, i);
-					methodName = "Index";
-					arguments = new ArraySegment<string> (parts, i, parts.Length - i);
+					methodName = parts [i];
+					arguments = new ArraySegment<string> (parts, i + 1, parts.Length - (i + 1));
 
 					if (this.Match (context, prefix, className, methodName, arguments)) {
 						return true;
 					}
+				}
+
+				className = String.Join(".", parts, 0, i);
+				methodName = "Index";
+				arguments = new ArraySegment<string> (parts, i, parts.Length - i);
+
+				if (this.Match (context, prefix, className, methodName, arguments)) {
+					return true;
 				}
 			}
 			return false;

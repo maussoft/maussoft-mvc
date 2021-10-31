@@ -58,7 +58,6 @@ namespace Maussoft.Mvc
 		{
 			string filename = context.Request.Url.LocalPath;
 			filename = Path.Combine("Content:",filename.Substring(1));
-			//filename = Path.Combine(Directory.GetCurrentDirectory(),filename);
 
 			using (Stream stream = assembly.GetManifestResourceStream(filename))
 			{
