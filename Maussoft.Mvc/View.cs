@@ -9,7 +9,7 @@ namespace Maussoft.Mvc
 	public class View<TSession> where TSession : new()
 	{
 		protected WebContext<TSession> Context=null;
-		private StringWriter _writer = new StringWriter();
+		private StringWriter writer = new StringWriter();
 
 		public virtual void Header() {}
 		public virtual void Content() {}
@@ -18,9 +18,9 @@ namespace Maussoft.Mvc
 		public string Render(WebContext<TSession> context)
 		{
 			Context = context;
-			_writer = new StringWriter ();
+			this.writer = new StringWriter ();
 			Header (); Content (); Footer ();
-			return _writer.ToString ();
+			return this.writer.ToString ();
 		}
 
 		private static string replace(string input, object[] arguments)
@@ -38,12 +38,12 @@ namespace Maussoft.Mvc
 
 		public void Write(string format, params object[] arguments)
 		{
-			_writer.Write (replace (format,arguments));
+			this.writer.Write (replace (format,arguments));
 		}
 
 		public void WriteLine(string format = "", params object[] arguments)
 		{
-			_writer.WriteLine (replace (format,arguments));
+			this.writer.WriteLine (replace (format,arguments));
 		}
 
 	}
