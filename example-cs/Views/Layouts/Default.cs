@@ -4,7 +4,7 @@
 
 using System;
 
-namespace Maussoft.Mvc.CsTest.Views.Layouts
+namespace Acme.Example.Views.Layouts
 {
 	public class Default<TSession>: Maussoft.Mvc.View<TSession> where TSession : new()
 	{

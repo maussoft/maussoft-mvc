@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Maussoft.Mvc;
 using System.Text.Json;
 
-namespace Maussoft.Mvc.CsTest.Controllers
+namespace Acme.Example.Controllers
 {
 	public class Test
 	{

@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports Maussoft.Mvc
 
 Public Class Application
 	Public Shared Sub Main()

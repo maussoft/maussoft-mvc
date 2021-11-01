@@ -2,19 +2,17 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Maussoft.Mvc.CsTest</RootNamespace>
+    <RootNamespace>Acme.Example</RootNamespace>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <Target Name="GenerateCode" BeforeTargets="CoreCompile">
       <Exec Command="echo 'Cleaning files...'" />
-      <Exec Command="../Maussoft.Mvc.ViewGen/bin/Debug/net5.0/Maussoft.Mvc.ViewGen" WorkingDirectory="$(MSBuildProjectDirectory)" />
+      <Exec Command="../viewgen/bin/Debug/net5.0/Maussoft.Mvc.ViewGen" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
   <ItemGroup>
-    <ProjectReference Include="..\Maussoft.Mvc\Maussoft.Mvc.csproj">
-      <Name>Maussoft.Mvc</Name>
-    </ProjectReference>
+    <PackageReference Include="Maussoft.Mvc" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup>

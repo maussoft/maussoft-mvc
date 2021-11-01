@@ -6,7 +6,7 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Maussoft.Mvc.CsTest.Views.Test
+namespace Acme.Example.Views.Test
 {
 	public class Index<TSession>: Layouts.Default<TSession> where TSession : new()
 	{

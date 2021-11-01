@@ -1,4 +1,6 @@
-﻿namespace Maussoft.Mvc.CsTest
+﻿using Maussoft.Mvc;
+
+namespace Acme.Example
 {
 	class MainClass
 	{
