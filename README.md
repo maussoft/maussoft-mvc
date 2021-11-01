@@ -1,16 +1,19 @@
-# maussoft-mvc
+# Maussoft.Mvc
 
 High speed web framework built in C# that runs on .NET 5
 
-### Build single executable
+### Build package
 
-You can run the following in the `example-cs` directory:
+You can run the following:
 
-    dotnet publish \
-        /p:Configuration=Release \
-        /p:PublishSingleFile=true \
-        /p:RuntimeIdentifier=linux-x64 \
-        /p:DebugType=None \
-        /p:DebugSymbols=false
+    dotnet pack -p:Configuration=Release
     
-You end up with `appsettings.json` (config file) and `Acme.Example` (executable) in the `bin/Release/net5.0/linux-x64/publish` directory.
+This will produce a `Maussoft.Mvc` nuget package file in the `bin/Release` directory.
+
+### TODO
+
+- add 404 for nonmatching route 
+- add debug toolbar with
+  - routing debugger (remove router debug output)
+  - API client debugger (API call pane)
+  - MySQL connection debugging (query pane)
