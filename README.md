@@ -13,17 +13,4 @@ You can run the following in the `example-cs` directory:
         /p:DebugType=None \
         /p:DebugSymbols=false
     
-You end up with two files in `bin/Release/net5.0/linux-x64/publish`:
-
-- appsettings.json
-- Maussoft.Mvc.CsTest
-
-One is the config file, the other one the executable.
- 
-### TODO
-
-- add 404 for nonmatching route 
-- add debug toolbar with
-  - routing debugger (remove router debug output)
-  - API client debugger (API call pane)
-  - MySQL connection debugging (query pane)
+You end up with `appsettings.json` (config file) and `Acme.Example` (executable) in the `bin/Release/net5.0/linux-x64/publish` directory.
