@@ -21,8 +21,6 @@ namespace Maussoft.Mvc
 		private readonly string sessionSavePath = null;
 		private readonly int sessionTimeout;
 
-		private Type type;
-
 		public WebServer(string appSettingsJsonFilename)
 		{
 			string value;
