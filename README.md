@@ -5,7 +5,7 @@ Simple C# web framework for .NET 5
 For example applications using this package, look at:
 
 - [Example in C#](https://github.com/maussoft/mvc-example-cs)
-- [Example in VB](https://github.com/maussoft/mvc-example-vb)
+- [Example in VB.net](https://github.com/maussoft/mvc-example-vb)
 
 ### Build package
 
