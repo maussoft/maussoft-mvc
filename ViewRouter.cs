@@ -22,7 +22,8 @@ namespace Maussoft.Mvc
 
 		private Boolean Invoke(WebContext<TSession> context, Type routedClass)
 		{
-			View<TSession> view = Activator.CreateInstance(routedClass) as View<TSession>;
+			Type genericClass = routedClass.MakeGenericType(typeof(TSession));
+			View<TSession> view = Activator.CreateInstance(genericClass) as View<TSession>;
 			if (view == null) {
 				Console.WriteLine ("ViewRouter: object {0} could not be created.", routedClass.FullName);
 				return false;
@@ -42,7 +43,7 @@ namespace Maussoft.Mvc
 
 			Console.WriteLine ("ViewRouter: try {0}.Render()", className);
 
-			routedClass = assembly.GetType(prefix+'.'+className);
+			routedClass = assembly.GetType(prefix+'.'+className+"`1");
 			if (routedClass == null) {
 				Console.WriteLine ("ViewRouter: class {0} does not exist.", prefix+'.'+className);
 				return false;
