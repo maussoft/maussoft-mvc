@@ -13,7 +13,7 @@ You can run the following:
 
     dotnet pack -p:Configuration=Release
     
-This will produce a `Maussoft.Mvc` nuget package file in the `bin/Release` directory.
+This will produce a `Maussoft.Mvc` [NuGet package](https://www.nuget.org/packages/Maussoft.Mvc/0.9.0) file in the `bin/Release` directory.
 
 ### TODO
 
