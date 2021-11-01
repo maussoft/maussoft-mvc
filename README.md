@@ -1,6 +1,6 @@
 # Maussoft.Mvc
 
-Simple web framework built in C# that runs on .NET 5
+Simple C# web framework for .NET 5
 
 ### Build package
 
