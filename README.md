@@ -4,7 +4,7 @@ High speed web framework built in C# that runs on .NET 5
 
 ### Build single executable
 
-You can run the following in the `Maussoft.Mvc.CsTest` directory:
+You can run the following in the `example-cs` directory:
 
     dotnet publish \
         /p:Configuration=Release \
