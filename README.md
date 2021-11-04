@@ -17,7 +17,7 @@ This will produce a `Maussoft.Mvc` [NuGet package](https://www.nuget.org/package
 
 ### TODO
 
-- add 404 for nonmatching route 
+- add prettier 404 for nonmatching route 
 - add debug toolbar with
   - routing debugger (remove router debug output)
   - API client debugger (API call pane)
