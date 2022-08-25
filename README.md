@@ -1,6 +1,6 @@
 # Maussoft.Mvc
 
-Simple C# web framework for .NET 5
+Simple C# web framework for .NET 6
 
 For example applications using this package, look at:
 
