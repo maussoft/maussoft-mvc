@@ -22,3 +22,5 @@ This will produce a `Maussoft.Mvc` [NuGet package](https://www.nuget.org/package
   - routing debugger (remove router debug output)
   - API client debugger (API call pane)
   - MySQL connection debugging (query pane)
+- read-only sessions (idempotency)
+- database access disabled for view
