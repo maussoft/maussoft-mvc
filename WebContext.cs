@@ -12,6 +12,7 @@ namespace Maussoft.Mvc
 {
     public class WebContext<TSession> where TSession : new()
     {
+        public string Method;
         public string Url;
         public string Controller;
         public string Action;
@@ -35,6 +36,7 @@ namespace Maussoft.Mvc
             this.context = context;
             this.sessionSavePath = sessionSavePath;
 
+            Method = this.context.Request.HttpMethod;
             Url = this.context.Request.RawUrl;
             Post = new Dictionary<string, string>();
             ReadPostData();
