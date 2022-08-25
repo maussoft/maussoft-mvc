@@ -1,78 +1,76 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using Maussoft.Mvc;
 
 //http://dotnetslackers.com/Community/blogs/haissam/archive/2007/07/25/Call-a-function-using-Reflection.aspx
 
 namespace Maussoft.Mvc
 {
-	public class ViewRouter<TSession> where TSession : new()
-	{
-		string viewNamespace;
+    public class ViewRouter<TSession> where TSession : new()
+    {
+        string viewNamespace;
 
-		public ViewRouter(string viewNamespace)
-		{
-			this.viewNamespace = viewNamespace;
-		}
+        public ViewRouter(string viewNamespace)
+        {
+            this.viewNamespace = viewNamespace;
+        }
 
-		private Boolean Invoke(WebContext<TSession> context, Type routedClass)
-		{
-			Type genericClass = routedClass.MakeGenericType(typeof(TSession));
-			View<TSession> view = Activator.CreateInstance(genericClass) as View<TSession>;
-			if (view == null) {
-				Console.WriteLine ("ViewRouter: object {0} could not be created.", routedClass.FullName);
-				return false;
-			}
-			Console.WriteLine ("ViewRouter: object {0} was created.", routedClass.FullName);
+        private Boolean Invoke(WebContext<TSession> context, Type routedClass)
+        {
+            Type genericClass = routedClass.MakeGenericType(typeof(TSession));
+            View<TSession> view = Activator.CreateInstance(genericClass) as View<TSession>;
+            if (view == null)
+            {
+                Console.WriteLine("ViewRouter: object {0} could not be created.", routedClass.FullName);
+                return false;
+            }
+            Console.WriteLine("ViewRouter: object {0} was created.", routedClass.FullName);
 
-			context.SendString (view.Render (context));
-			Console.WriteLine ("ViewRouter: invoked {0}.Render()", routedClass.FullName);
+            context.SendString(view.Render(context));
+            Console.WriteLine("ViewRouter: invoked {0}.Render()", routedClass.FullName);
 
-			return true;
-		}
+            return true;
+        }
 
-		private Boolean Match(WebContext<TSession> context, string prefix, string className)
-		{
-			Type routedClass = null;
-			Assembly assembly = Assembly.GetEntryAssembly();
+        private Boolean Match(WebContext<TSession> context, string prefix, string className)
+        {
+            Type routedClass = null;
+            Assembly assembly = Assembly.GetEntryAssembly();
 
-			Console.WriteLine ("ViewRouter: try {0}.Render()", className);
+            Console.WriteLine("ViewRouter: try {0}.Render()", className);
 
-			routedClass = assembly.GetType(prefix+'.'+className+"`1");
-			if (routedClass == null) {
-				Console.WriteLine ("ViewRouter: class {0} does not exist.", prefix+'.'+className);
-				return false;
-			}
-			Console.WriteLine ("ViewRouter: class {0} found.", prefix+'.'+className);
+            routedClass = assembly.GetType(prefix + '.' + className + "`1");
+            if (routedClass == null)
+            {
+                Console.WriteLine("ViewRouter: class {0} does not exist.", prefix + '.' + className);
+                return false;
+            }
+            Console.WriteLine("ViewRouter: class {0} found.", prefix + '.' + className);
 
-			return this.Invoke(context, routedClass);
-		}
+            return this.Invoke(context, routedClass);
+        }
 
-		public Boolean Route(WebContext<TSession> context)
-		{
-			if (context.Sent) return false;
-			if (context.View == null) return false; //Route to 404?
+        public Boolean Route(WebContext<TSession> context)
+        {
+            if (context.Sent) return false;
+            if (context.View == null) return false; //Route to 404?
 
-			string[] parts = context.View.Split ('.');
-			string className = null;
+            string[] parts = context.View.Split('.');
+            string className = null;
 
-			string prefix = viewNamespace;
-			for (int i = parts.Length-1; i >= 0; i--) {
+            string prefix = viewNamespace;
+            for (int i = parts.Length - 1; i >= 0; i--)
+            {
 
-				className = (String.Join (".", parts, 0, i) + '.' + parts[parts.Length-1]).Trim('.');
+                className = (String.Join(".", parts, 0, i) + '.' + parts[parts.Length - 1]).Trim('.');
 
-				if (this.Match (context, prefix, className)) {
-					return true;
-				}
+                if (this.Match(context, prefix, className))
+                {
+                    return true;
+                }
 
-			}
-			return false;
-		}
-		
-	}
+            }
+            return false;
+        }
+
+    }
 }
