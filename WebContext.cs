@@ -5,6 +5,7 @@ using System.Threading;
 using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Dynamic;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -17,6 +18,7 @@ namespace Maussoft.Mvc
         public string Controller;
         public string Action;
         public string View;
+        public string RedirectUrl;
         public bool Sent;
 
         public Dictionary<string, string> Post;
@@ -37,13 +39,14 @@ namespace Maussoft.Mvc
             this.context = context;
             this.sessionSavePath = sessionSavePath;
 
-            Method = this.context.Request.HttpMethod;
-            Url = this.context.Request.RawUrl;
-            Post = new Dictionary<string, string>();
-            ReadPostData();
+            this.Method = this.context.Request.HttpMethod;
+            this.Url = this.context.Request.RawUrl;
+            this.Post = new Dictionary<string, string>();
+            this.ReadPostData();
 
-            Data = new System.Dynamic.ExpandoObject();
-            Sent = false;
+            this.Data = new ViewData();
+            this.RedirectUrl = null;
+            this.Sent = false;
         }
 
         private String CreateSessionIdentifier()
@@ -157,6 +160,11 @@ namespace Maussoft.Mvc
             return null;
         }
 
+        public void Redirect(string url)
+        {
+            this.RedirectUrl = url;
+        }
+
         private void ReadPostData()
         {
             HttpListenerRequest request = this.context.Request;
@@ -174,9 +182,19 @@ namespace Maussoft.Mvc
 
         }
 
-        internal void SendString(string output, int StatusCode = 200)
+        internal void SendString(string output, string mimeType = "text/html", int StatusCode = 200)
         {
-            if (!Sent && StatusCode != 200) this.context.Response.StatusCode = StatusCode;
+            if (Sent)
+            {
+                throw new Exception("Output has already been sent");
+            }
+            if (RedirectUrl != null)
+            {
+                this.context.Response.StatusCode = 302;
+                this.context.Response.AddHeader("Location", RedirectUrl);
+                return;
+            }
+            if (StatusCode != 200) this.context.Response.StatusCode = StatusCode;
             byte[] buf = System.Text.Encoding.UTF8.GetBytes(output);
             this.context.Response.ContentLength64 = buf.Length;
             this.context.Response.OutputStream.Write(buf, 0, buf.Length);

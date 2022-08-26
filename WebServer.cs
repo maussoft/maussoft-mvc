@@ -87,16 +87,23 @@ namespace Maussoft.Mvc
                                             actionResult = (new ActionRouter<TSession>(this.controllerNamespace)).Route(webctx);
                                             webctx.WriteSession();
                                             if (!actionResult) webctx.View = "Error.NotFound";
-                                            viewResult = new ViewRouter<TSession>(this.viewNamespace).Route(webctx);
-                                            webctx.FinalizeSession();
-                                            if (viewResult == null) webctx.SendString("NotFound", 404);
-                                            else webctx.SendString(viewResult);
+                                            if (webctx.RedirectUrl == null)
+                                            {
+                                                viewResult = new ViewRouter<TSession>(this.viewNamespace).Route(webctx);
+                                                webctx.FinalizeSession();
+                                                if (viewResult == null) webctx.SendString("NotFound", "text/plain", 404);
+                                                else webctx.SendString(viewResult);
+                                            }
+                                            else
+                                            {
+                                                webctx.SendString(viewResult);
+                                            }
                                         }
                                     }
                                     catch (Exception e) // application log
                                     {
                                         Console.WriteLine(e.ToString());
-                                        if (webctx != null) webctx.SendString("<pre>" + e.ToString() + "</pre>", 500);
+                                        if (webctx != null) webctx.SendString("<pre>" + e.ToString() + "</pre>", "text/html", 500);
                                     }
                                     finally
                                     {
