@@ -14,24 +14,25 @@ namespace Maussoft.Mvc
             this.viewNamespace = viewNamespace;
         }
 
-        private Boolean Invoke(WebContext<TSession> context, Type routedClass)
+        private string Invoke(WebContext<TSession> context, Type routedClass)
         {
             Type genericClass = routedClass.MakeGenericType(typeof(TSession));
             View<TSession> view = Activator.CreateInstance(genericClass) as View<TSession>;
             if (view == null)
             {
                 Console.WriteLine("ViewRouter: object {0} could not be created.", routedClass.FullName);
-                return false;
+                return null;
             }
             Console.WriteLine("ViewRouter: object {0} was created.", routedClass.FullName);
 
-            context.SendString(view.Render(context));
+            string result = view.Render(context);
+
             Console.WriteLine("ViewRouter: invoked {0}.Render()", routedClass.FullName);
 
-            return true;
+            return result;
         }
 
-        private Boolean Match(WebContext<TSession> context, string prefix, string className)
+        private string Match(WebContext<TSession> context, string prefix, string className)
         {
             Type routedClass = null;
             Assembly assembly = Assembly.GetEntryAssembly();
@@ -42,17 +43,17 @@ namespace Maussoft.Mvc
             if (routedClass == null)
             {
                 Console.WriteLine("ViewRouter: class {0} does not exist.", prefix + '.' + className);
-                return false;
+                return null;
             }
             Console.WriteLine("ViewRouter: class {0} found.", prefix + '.' + className);
 
             return this.Invoke(context, routedClass);
         }
 
-        public Boolean Route(WebContext<TSession> context)
+        public string Route(WebContext<TSession> context)
         {
-            if (context.Sent) return false;
-            if (context.View == null) return false; //Route to 404?
+            if (context.Sent) return null;
+            if (context.View == null) return null; //Route to 404?
 
             string[] parts = context.View.Split('.');
             string className = null;
@@ -63,13 +64,14 @@ namespace Maussoft.Mvc
 
                 className = (String.Join(".", parts, 0, i) + '.' + parts[parts.Length - 1]).Trim('.');
 
-                if (this.Match(context, prefix, className))
+                var result = this.Match(context, prefix, className);
+                if (result != null)
                 {
-                    return true;
+                    return result;
                 }
 
             }
-            return false;
+            return null;
         }
 
     }

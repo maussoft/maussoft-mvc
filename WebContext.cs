@@ -25,6 +25,7 @@ namespace Maussoft.Mvc
 
         public string SessionIdentifier;
         public TSession Session;
+        private int sessionHashCode;
 
         private HttpListenerContext context;
         private string sessionSavePath;
@@ -51,7 +52,7 @@ namespace Maussoft.Mvc
             return Convert.ToBase64String(data).Replace("/", "_").Replace("+", "-");
         }
 
-        public void StartSession()
+        public void StartSession(Boolean readOnly)
         {
             Cookie cookie = this.context.Request.Cookies["Maussoft.Mvc"];
             if (cookie == null)
@@ -65,30 +66,61 @@ namespace Maussoft.Mvc
                 SessionIdentifier = cookie.Value;
             }
 
-            this.sessionStream = WaitForFile(this.sessionSavePath + SessionIdentifier, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+            this.sessionStream = WaitForFile(this.sessionSavePath + SessionIdentifier, FileMode.OpenOrCreate, readOnly ? FileAccess.Read : FileAccess.ReadWrite, FileShare.Read);
 
             if (this.sessionStream.Length == 0)
             {
                 Session = new TSession();
+                var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
+                sessionHashCode = ComputeHash(bytes);
             }
             else
             {
                 byte[] bytes = new byte[this.sessionStream.Length];
                 this.sessionStream.Read(bytes, 0, bytes.Length);
                 Session = JsonSerializer.Deserialize<TSession>(bytes);
+                sessionHashCode = ComputeHash(bytes);
             }
+
+            if (readOnly)
+            {
+                this.sessionStream.Close();
+                this.sessionStream = null;
+            }
+
+        }
+
+        private static int ComputeHash(params byte[] data)
+        {
+            var hash = new HashCode();
+            hash.AddBytes(data);
+            return hash.ToHashCode();
         }
 
         public void WriteSession()
         {
-            this.sessionStream.SetLength(0);
             var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
-            this.sessionStream.Write(bytes, 0, bytes.Length);
-        }
 
-        public void CloseSession()
-        {
-            this.sessionStream.Close();
+            var newSessionHashCode = ComputeHash(bytes);
+
+            if (newSessionHashCode != this.sessionHashCode)
+            {
+                if (this.sessionStream != null)
+                {
+                    this.sessionStream.SetLength(0);
+                    this.sessionStream.Write(bytes, 0, bytes.Length);
+                    this.sessionHashCode = newSessionHashCode;
+                }
+                else
+                {
+                    throw new Exception("A '" + Method + "' on '" + Controller + "." + Action + "' shouldn't write to the session in the Controller");
+                }
+            }
+
+            if (this.sessionStream != null)
+            {
+                this.sessionStream.Close();
+            }
         }
 
         FileStream WaitForFile(string fullPath, FileMode mode, FileAccess access, FileShare share)
@@ -130,7 +162,7 @@ namespace Maussoft.Mvc
 
         }
 
-        public void SendString(string output, int StatusCode = 200)
+        internal void SendString(string output, int StatusCode = 200)
         {
             if (!Sent && StatusCode != 200) this.context.Response.StatusCode = StatusCode;
             byte[] buf = System.Text.Encoding.UTF8.GetBytes(output);

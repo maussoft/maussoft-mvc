@@ -75,19 +75,21 @@ namespace Maussoft.Mvc
                                 {
                                     HttpListenerContext context = c as HttpListenerContext;
                                     WebContext<TSession> webctx = null;
-                                    Boolean found = false;
+                                    Boolean actionResult = false;
+                                    string viewResult = null;
                                     try
                                     {
                                         if (!StaticServer.Serve(this.assembly, context))
                                         {
                                             webctx = new WebContext<TSession>(context, this.sessionSavePath);
                                             Console.WriteLine(webctx.Method + " " + webctx.Url); // access log
-                                            webctx.StartSession();
-                                            found = (new ActionRouter<TSession>(this.controllerNamespace)).Route(webctx);
-                                            if (!found) webctx.View = "Error.NotFound";
-                                            found = new ViewRouter<TSession>(this.viewNamespace).Route(webctx);
-                                            if (!webctx.Sent) webctx.SendString("NotFound", 404);
+                                            webctx.StartSession(webctx.Method == "GET");
+                                            actionResult = (new ActionRouter<TSession>(this.controllerNamespace)).Route(webctx);
                                             webctx.WriteSession();
+                                            if (!actionResult) webctx.View = "Error.NotFound";
+                                            viewResult = new ViewRouter<TSession>(this.viewNamespace).Route(webctx);
+                                            if (viewResult == null) webctx.SendString("NotFound", 404);
+                                            else webctx.SendString(viewResult);
                                         }
                                     }
                                     catch (Exception e) // application log
@@ -98,7 +100,6 @@ namespace Maussoft.Mvc
                                     finally
                                     {
                                         context.Response.OutputStream.Close();
-                                        if (webctx != null) webctx.CloseSession();
                                     }
                                 }, this.listener.GetContext());
                         }
