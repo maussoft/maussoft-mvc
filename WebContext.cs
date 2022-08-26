@@ -123,6 +123,18 @@ namespace Maussoft.Mvc
             }
         }
 
+        public void FinalizeSession()
+        {
+            var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
+
+            var newSessionHashCode = ComputeHash(bytes);
+
+            if (newSessionHashCode != this.sessionHashCode)
+            {
+                throw new Exception("A '" + Method + "' on '" + Controller + "." + Action + "' shouldn't write to the session in the View '" + View + "'");
+            }
+        }
+
         FileStream WaitForFile(string fullPath, FileMode mode, FileAccess access, FileShare share)
         {
             for (int numTries = 0; numTries < 3000; numTries++)

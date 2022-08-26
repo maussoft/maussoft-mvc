@@ -88,6 +88,7 @@ namespace Maussoft.Mvc
                                             webctx.WriteSession();
                                             if (!actionResult) webctx.View = "Error.NotFound";
                                             viewResult = new ViewRouter<TSession>(this.viewNamespace).Route(webctx);
+                                            webctx.FinalizeSession();
                                             if (viewResult == null) webctx.SendString("NotFound", 404);
                                             else webctx.SendString(viewResult);
                                         }
