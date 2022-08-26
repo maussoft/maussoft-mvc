@@ -16,7 +16,6 @@ namespace Maussoft.Mvc
 
         private string Invoke(WebContext<TSession> context, Type routedClass)
         {
-            Console.WriteLine(routedClass.FullName);
             View<TSession> view = Activator.CreateInstance(routedClass) as View<TSession>;
             if (view == null)
             {

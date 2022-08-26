@@ -5,7 +5,7 @@ using System.Threading;
 using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Dynamic;
+using System.Numerics;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -70,10 +70,9 @@ namespace Maussoft.Mvc
             }
 
             this.sessionStream = WaitForFile(this.sessionSavePath + SessionIdentifier, FileMode.OpenOrCreate, readOnly ? FileAccess.Read : FileAccess.ReadWrite, FileShare.Read);
-
             if (this.sessionStream.Length == 0)
             {
-                Session = new TSession();
+                this.Session = new TSession();
                 var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
                 sessionHashCode = ComputeHash(bytes);
             }
@@ -81,7 +80,7 @@ namespace Maussoft.Mvc
             {
                 byte[] bytes = new byte[this.sessionStream.Length];
                 this.sessionStream.Read(bytes, 0, bytes.Length);
-                Session = JsonSerializer.Deserialize<TSession>(bytes);
+                this.Session = JsonSerializer.Deserialize<TSession>(bytes);
                 sessionHashCode = ComputeHash(bytes);
             }
 
@@ -95,15 +94,12 @@ namespace Maussoft.Mvc
 
         private static int ComputeHash(params byte[] data)
         {
-            var hash = new HashCode();
-            hash.AddBytes(data);
-            return hash.ToHashCode();
+            return new BigInteger(data).GetHashCode();
         }
 
         public void WriteSession()
         {
             var bytes = JsonSerializer.SerializeToUtf8Bytes<TSession>(Session);
-
             var newSessionHashCode = ComputeHash(bytes);
 
             if (newSessionHashCode != this.sessionHashCode)
