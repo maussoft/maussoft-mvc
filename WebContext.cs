@@ -61,8 +61,13 @@ namespace Maussoft.Mvc
             if (cookie == null)
             {
                 SessionIdentifier = CreateSessionIdentifier();
-                cookie = new Cookie("Maussoft.Mvc", SessionIdentifier);
-                this.context.Response.AppendCookie(cookie);
+                string appName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
+                string setCookieString = appName + "=" + SessionIdentifier + "; HttpOnly; SameSite=Lax";
+                if (!this.context.Request.IsLocal)
+                {
+                    setCookieString += "; Secure";
+                }
+                this.context.Response.AddHeader("Set-Cookie", setCookieString);
             }
             else
             {
@@ -180,7 +185,7 @@ namespace Maussoft.Mvc
 
         internal void SendString(string output, string mimeType = "text/html", int StatusCode = 200)
         {
-            if (Sent)
+            if (this.Sent)
             {
                 throw new Exception("Output has already been sent");
             }
@@ -194,7 +199,7 @@ namespace Maussoft.Mvc
             byte[] buf = System.Text.Encoding.UTF8.GetBytes(output);
             this.context.Response.ContentLength64 = buf.Length;
             this.context.Response.OutputStream.Write(buf, 0, buf.Length);
-            Sent = true;
+            this.Sent = true;
         }
 
     }
