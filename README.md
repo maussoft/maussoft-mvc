@@ -26,3 +26,4 @@ This will produce a `Maussoft.Mvc` [NuGet package](https://www.nuget.org/package
 - database access disabled for view
 - ~~csrf protection for post requests~~
 - named parameters on get requests
+- add a template (dotnet new)
