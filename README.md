@@ -27,3 +27,4 @@ This will produce a `Maussoft.Mvc` [NuGet package](https://www.nuget.org/package
 - ~~csrf protection for post requests~~
 - named parameters on get requests
 - add a template (dotnet new)
+- api caller can only call GET during GET request
