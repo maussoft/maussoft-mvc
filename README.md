@@ -29,3 +29,25 @@ This will produce a `Maussoft.Mvc` [NuGet package](https://www.nuget.org/package
 - add a template (dotnet new)
 - api caller can only call GET during GET request
 - controller can't write to database during GET
+
+Features a framework may have:
+
+- Translations
+- Validations
+- Migrations
+- ORM/db access
+- Templating
+- Sessions
+- Logging
+- Requests error handling
+- Rate limiting
+- Authentication
+- Authorization
+- CSRF protection
+- Background jobs/queues
+- Email sending/notifications
+- Websockets
+- Encryption of data
+- File uploads/downloads with S3 storage, etc
+
+
